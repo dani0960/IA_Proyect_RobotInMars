@@ -1,0 +1,2 @@
+# ------ Evitamos almacenar los ficheros con extensión .class ------
+*.class
