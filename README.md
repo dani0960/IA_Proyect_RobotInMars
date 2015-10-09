@@ -4,4 +4,4 @@
 #### Miembros del equipo:
 * Germán Paz Méndez
 * Eric
-* Lucas
+* Jose Lucas Ruiz González
