@@ -1,13 +1,13 @@
 package Objetos;
 
-
+import java.awt.Color;
 
 public class Robot {
 	private int posX;
 	private int posY;
 	private int estado;
 	private int estadoSiguiente;
-	// color
+//	private Color color = color.BLUE;
 	
 	/** CONSTRUCTORES */
 	public Robot(int posX, int posY, int estado) {
