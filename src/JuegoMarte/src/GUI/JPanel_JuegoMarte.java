@@ -2,10 +2,11 @@ package GUI;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
 
 import javax.swing.JPanel;
 
-import Objetos.Robot;
 import Reglas.ReglasJuego;
 
 // Area de dibujo
@@ -67,8 +68,12 @@ public class JPanel_JuegoMarte extends JPanel {
 	                 break;
 	        case 1:  tablero.robot[posX][posY].setEstado(2);
 	                 break;
-	        case 2:  tablero.robot[posX][posY].setEstado(0);
+	        case 2:  tablero.robot[posX][posY].setEstado(3);
 	        		 break;
+	        case 3:  tablero.robot[posX][posY].setEstado(4);
+   		 		break;
+	        case 4:  tablero.robot[posX][posY].setEstado(0);
+		 		break;
 	        default: tablero.robot[posX][posY].setEstado(1);
 	        break;
 		}
@@ -96,7 +101,10 @@ public class JPanel_JuegoMarte extends JPanel {
 
 		pintarFondo(g);
 
-		
+		Image img1 = Toolkit.getDefaultToolkit().getImage("Images/r2d2.JPG");
+		Image img2 = Toolkit.getDefaultToolkit().getImage("Images/c3po.JPG");
+		Image img3 = Toolkit.getDefaultToolkit().getImage("Images/roca.JPG");
+		Image img4 = Toolkit.getDefaultToolkit().getImage("Images/agua.png");
 		int x,y;
 		for (int i = 0; i < tablero.getTamanoX(); i++) {
 			for (int j = 0; j < tablero.getTamanoY(); j++) {
@@ -104,13 +112,28 @@ public class JPanel_JuegoMarte extends JPanel {
 					g.setColor(Color.BLACK);
 					x = (i * this.altoCasilla)+1;
 					y = (j * this.altoCasilla)+1;
-					g.fillRect(x, y, (this.altoCasilla-1), (this.altoCasilla-1));
+					g.drawImage(img3, x, y, (this.altoCasilla-1), (this.altoCasilla-1), this);
 				}
 				if (tablero.robot[i][j].getEstado() == 2) { // casilla pintada
 					g.setColor(Color.BLUE);
 					x = (i * this.altoCasilla)+1;
 					y = (j * this.altoCasilla)+1;
-					g.fillRect(x, y, (this.altoCasilla-1), (this.altoCasilla-1));
+//					g.fillRect(x, y, (this.altoCasilla-1), (this.altoCasilla-1));
+					g.drawImage(img1, x, y, (this.altoCasilla-1), (this.altoCasilla-1), this);
+				}
+				if (tablero.robot[i][j].getEstado() == 3) { // casilla pintada
+					g.setColor(Color.BLUE);
+					x = (i * this.altoCasilla)+1;
+					y = (j * this.altoCasilla)+1;
+//					g.fillRect(x, y, (this.altoCasilla-1), (this.altoCasilla-1));
+					g.drawImage(img2, x, y, (this.altoCasilla-1), (this.altoCasilla-1), this);
+				}
+				if (tablero.robot[i][j].getEstado() == 4) { // casilla pintada
+					g.setColor(Color.BLUE);
+					x = (i * this.altoCasilla)+1;
+					y = (j * this.altoCasilla)+1;
+//					g.fillRect(x, y, (this.altoCasilla-1), (this.altoCasilla-1));
+					g.drawImage(img4, x, y, (this.altoCasilla-1), (this.altoCasilla-1), this);
 				}
 			}
 		}
