@@ -4,17 +4,20 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.util.Random;
 
 import javax.swing.JPanel;
 
 import Heurística.ReglasJuego;
 import Útiles.MatrizDeJuego;
+import GUI.Applet;
 
 // Area de dibujo
 @SuppressWarnings("serial")
 public class Lienzo extends JPanel {
 	// Matrix del juego
-	private MatrizDeJuego mGame;;
+	private MatrizDeJuego mGame;
+	private Applet cosa;
 	boolean inicializado = false;
 	
 	// Datos del lienzo
@@ -45,7 +48,6 @@ public class Lienzo extends JPanel {
 	public void setNumeroDeFilas(int numeroDeFilas) {
 		this.nFilas = numeroDeFilas;
 	}
-	
 	
 	/** MÉTODOS */
 	public void clear() {
@@ -101,13 +103,27 @@ public class Lienzo extends JPanel {
 //			}
 //		}
 	}
+	
+	
 
+	protected void Random(int NUM){
+		
+		for(int i=0;i<NUM;i++){
+			int x = mGame.aleatorioX();
+			int y = mGame.aleatorioY();
+			if( (mGame.robot[x][y].getEstado()!=1) && (mGame.robot[x][y].getEstado()!=2) && (mGame.robot[x][y].getEstado()!=3) && (mGame.robot[x][y].getEstado()!=4)){
+				mGame.robot[x][y].setEstado(1);
+			}
+		}
+		repaint();
+	}
+	
+	
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
 		pintarFondo(g);
-
 		Image img1 = Toolkit.getDefaultToolkit().getImage("Images/r2d2.JPG");
 		Image img2 = Toolkit.getDefaultToolkit().getImage("Images/c3po.JPG");
 		Image img3 = Toolkit.getDefaultToolkit().getImage("Images/roca.JPG");
@@ -123,31 +139,36 @@ public class Lienzo extends JPanel {
 					y = (j * this.altoCasilla)+1;
 					g.drawImage(img3, y + anchoX, x + anchoY, (this.altoCasilla-1), (this.altoCasilla-1),this);
 				}
-//				if (tablero.robot[i][j].getEstado() == 2) { // casilla pintada
-////					g.setColor(Color.BLUE);
-//					x = (i * this.altoCasilla)+1;
-//					y = (j * this.altoCasilla)+1;
-////					g.fillRect(x, y, (this.altoCasilla-1), (this.altoCasilla-1));
-//					g.drawImage(img1, y + anchoX, x + anchoY, (this.altoCasilla-1), (this.altoCasilla-1),this);
-//				}
-//				if (tablero.robot[i][j].getEstado() == 3) { // casilla pintada
-////					g.setColor(Color.BLUE);
-//					x = (i * this.altoCasilla)+1;
-//					y = (j * this.altoCasilla)+1;
-////					g.fillRect(x, y, (this.altoCasilla-1), (this.altoCasilla-1));
-//					g.drawImage(img2, y + anchoX, x + anchoY, (this.altoCasilla-1), (this.altoCasilla-1),this);
-//				}
-//				if (tablero.robot[i][j].getEstado() == 4) { // casilla pintada
+				if (mGame.robot[i][j].getEstado() == 2) { // casilla pintada
 //					g.setColor(Color.BLUE);
-//					x = (i * this.altoCasilla)+1;
-//					y = (j * this.altoCasilla)+1;
-////					g.fillRect(x, y, (this.altoCasilla-1), (this.altoCasilla-1));
-//					g.drawImage(img4, y + anchoX, x + anchoY, (this.altoCasilla-1), (this.altoCasilla-1),this);
-//				}
+					x = (i * this.altoCasilla)+1;
+					y = (j * this.altoCasilla)+1;
+//					g.fillRect(x, y, (this.altoCasilla-1), (this.altoCasilla-1));
+					g.drawImage(img1, y + anchoX, x + anchoY, (this.altoCasilla-1), (this.altoCasilla-1),this);
+				}
+				if (mGame.robot[i][j].getEstado() == 3) { // casilla pintada
+//					g.setColor(Color.BLUE);
+					x = (i * this.altoCasilla)+1;
+					y = (j * this.altoCasilla)+1;
+//					g.fillRect(x, y, (this.altoCasilla-1), (this.altoCasilla-1));
+					g.drawImage(img2, y + anchoX, x + anchoY, (this.altoCasilla-1), (this.altoCasilla-1),this);
+				}
+				if (mGame.robot[i][j].getEstado() == 4) { // casilla pintada
+					g.setColor(Color.BLUE);
+					x = (i * this.altoCasilla)+1;
+					y = (j * this.altoCasilla)+1;
+//					g.fillRect(x, y, (this.altoCasilla-1), (this.altoCasilla-1));
+					g.drawImage(img4, y + anchoX, x + anchoY, (this.altoCasilla-1), (this.altoCasilla-1),this);
+				}
 			}
 		}
 	}
+	
+	
 
+	
+	
+	
 	public void pintarFondo(Graphics g) {
 		// INICIALIZAMOS TABLERO
 //		if (!inicializado) {
@@ -183,3 +204,7 @@ public class Lienzo extends JPanel {
 	        }
 	}
 }
+
+
+
+	

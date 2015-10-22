@@ -25,14 +25,20 @@ import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import Útiles.MatrizDeJuego;
+
 @SuppressWarnings("serial")
 public class Applet extends JApplet {
+	public Applet() {
+	}
 	public static final int TAMANO_PANEL = 50;
 	public static final int TAMANO_PANEL_DIBUJO = 170;
 	public static final int MARGEN = 10;
 	public static final int ANCHO_BOTON = 150;
 	public static final int ANCHO_CAMPO = 50;
 	public static final int ALTO_BOTON = 30;
+	private int obsta;
+	private MatrizDeJuego mGame;
 
 	Border etched = BorderFactory.createEtchedBorder();
 	Border blackline = BorderFactory.createLineBorder(Color.black);
@@ -44,20 +50,26 @@ public class Applet extends JApplet {
 	protected JButton botonFin = new JButton("Fin");
 	protected JButton botonPausa = new JButton("Pausa");
 	protected JButton botonPaso = new JButton("Paso");
+	protected JButton botonObstaculo = new JButton("Obstáculo");
 
 	protected JSlider deslizadorVelocidad;
 	protected JLabel textoVelocidad = new JLabel();
 	protected JLabel textoFilas = new JLabel();
 	protected JLabel textoColumnas = new JLabel();
-	
+	protected JLabel textoObstaculos = new JLabel();
 	// from 0 to 9, in 1.0 steps start value 5  
 	protected SpinnerNumberModel model1 = new SpinnerNumberModel(10.0, 10.0, 100.0, 1.0);  
 	protected JSpinner spin1 = new JSpinner(model1);
 	protected SpinnerNumberModel model2 = new SpinnerNumberModel(10.0, 10.0, 100.0, 1.0); 
 	protected JSpinner spin2 = new JSpinner(model2);
 	
+	protected SpinnerNumberModel model3 = new SpinnerNumberModel(10.0, 10.0, 100.0, 1.0); 
+	protected JSpinner spin3 = new JSpinner(model3);
+	
+	
 	private JTextField jtfnumber = new JTextField();
 	private JTextField jtfnumber2 = new JTextField();
+
 
 	// ComboBox
 	String[] patronesStrings = { "Block","Beehive","Toad","Blinker", "Glider", "Diehard" };
@@ -74,7 +86,7 @@ public class Applet extends JApplet {
 		areaDibujo.setBackground(Color.WHITE);
 		// areaDibujo.addMouseListener(oyente);
 		areaDibujo.setFocusable(true); // centro el foco en el area de dibujo
-		add(areaDibujo, BorderLayout.CENTER);
+		getContentPane().add(areaDibujo, BorderLayout.CENTER);
 		// areaDibujo.addMouseMotionListener(oyente);
 
 		// AREA BOTONES
@@ -82,10 +94,11 @@ public class Applet extends JApplet {
 				TAMANO_PANEL));
 		areaBotones.setLayout(null);
 		areaBotones.setBorder(blackline);
-		add(areaBotones, BorderLayout.WEST);
+		getContentPane().add(areaBotones, BorderLayout.WEST);
 		inicializarDeslizadores(areaBotones);
 		textoColumnas = new JLabel("Columnas: ");
 		textoFilas = new JLabel("Filas: ");
+		textoObstaculos = new JLabel("Obstáculos: ");
 		inicializarBotones(areaBotones);
 
 		// // BOTONES
@@ -150,6 +163,15 @@ public class Applet extends JApplet {
 					}
 				
 				});
+				
+				spin3.addChangeListener(new ChangeListener() {
+					@Override
+					public void stateChanged(ChangeEvent e) {
+						// Ponemos el valor del JSpinner en el JTextField
+						int value = ((SpinnerNumberModel) spin3.getModel()).getNumber().intValue();
+						obsta= value;
+					}
+				});
 		/** Introduce numero 1-100 */
 //		jtfnumber2.addActionListener(new ActionListener() {
 //			public void actionPerformed(ActionEvent e) {
@@ -190,6 +212,12 @@ public class Applet extends JApplet {
 				timer.stop();
 //				areaDibujo.paso();
 				repaint();
+			}
+		});
+		
+		botonObstaculo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				areaDibujo.Random(obsta);
 			}
 		});
 
@@ -265,22 +293,28 @@ public class Applet extends JApplet {
 		panel.add(botonPaso);
 		panel.add(textoFilas);
 		panel.add(textoColumnas);
+		panel.add(textoObstaculos);
 		panel.add(spin1);
 		panel.add(spin2);
+		panel.add(spin3);
 		panel.add(patList);
+		panel.add(botonObstaculo);
 
 		botonInicio.setBounds(new Rectangle(MARGEN, MARGEN, ANCHO_BOTON, ALTO_BOTON));
 		botonPausa.setBounds(new Rectangle(MARGEN , MARGEN * 5, ANCHO_BOTON, ALTO_BOTON));
-		botonPaso.setBounds(new Rectangle(MARGEN , MARGEN * 9, ANCHO_BOTON, ALTO_BOTON));
-		botonFin.setBounds(new Rectangle(MARGEN , MARGEN * 13, ANCHO_BOTON, ALTO_BOTON));
+		botonPaso.setBounds(new Rectangle(10, 89, 150, 30));
+		botonObstaculo.setBounds(new Rectangle(10, 129, 150, 30));
+		botonFin.setBounds(new Rectangle(10, 170, 150, 30));
 		
-		textoVelocidad.setBounds(new Rectangle(MARGEN , MARGEN * 17, ANCHO_BOTON + 80, ALTO_BOTON));
-		deslizadorVelocidad.setBounds(new Rectangle( MARGEN  , MARGEN * 21 , ANCHO_BOTON , ALTO_BOTON));
+		textoVelocidad.setBounds(new Rectangle(10, 210, 230, 30));
+		deslizadorVelocidad.setBounds(new Rectangle(10, 229, 150, 30));
 		
-		textoFilas.setBounds(new Rectangle(MARGEN , MARGEN * 27, ANCHO_BOTON , ALTO_BOTON));
-		spin1.setBounds(new Rectangle(MARGEN +80, MARGEN * 27, ANCHO_CAMPO, ALTO_BOTON));
+		textoFilas.setBounds(new Rectangle(10, 270, 150, 30));
+		spin1.setBounds(new Rectangle(MARGEN +80, MARGEN * 27, ANCHO_CAMPO, ALTO_BOTON));		
 		textoColumnas.setBounds(new Rectangle(MARGEN , MARGEN * 31, ANCHO_BOTON , ALTO_BOTON));
 		spin2.setBounds(new Rectangle(MARGEN +80, MARGEN * 31, ANCHO_CAMPO, ALTO_BOTON));
+		textoObstaculos.setBounds(new Rectangle(MARGEN , MARGEN * 35, ANCHO_BOTON , ALTO_BOTON));
+		spin3.setBounds(new Rectangle(MARGEN +80, MARGEN * 35, ANCHO_CAMPO, ALTO_BOTON));
 		patList.setBounds(new Rectangle(MARGEN * 101, MARGEN, ANCHO_BOTON, ALTO_BOTON));
 
 

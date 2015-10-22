@@ -1,5 +1,8 @@
 package Útiles;
 
+import java.awt.Graphics;
+import java.util.Random;
+
 import Objetos.Robot;
 
 public class MatrizDeJuego {
@@ -47,7 +50,27 @@ public class MatrizDeJuego {
 	public void setTamanoY(int tamanoY) {
 		this.tamanoY = tamanoY;
 	}
-
+	
+	
+	public int aleatorioX(){
+		Random semilla = new Random();
+		int posX=1;
+		posX = semilla.nextInt(tamanoX);
+		return posX;
+	}
+	
+	public int aleatorioY(){
+		Random semilla = new Random();
+		int posY=2;
+		posY = semilla.nextInt(tamanoY);
+		return posY;
+	}
+	public void random(){
+		int x = aleatorioX();
+		int y = aleatorioY();
+	}
+	
+	
 	public void predeterminado() {
 		this.robot[2][2].setEstado(1);
 		this.robot[3][3].setEstado(1);
