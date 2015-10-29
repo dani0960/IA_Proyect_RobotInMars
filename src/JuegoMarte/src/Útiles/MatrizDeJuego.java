@@ -1,15 +1,14 @@
 package Útiles;
 
 import java.util.Random;
-
 import Objetos.Personaje;
 
 public class MatrizDeJuego {
-	public Personaje[][] mPersonaje;
-	private int tamanoX;
-	private int tamanoY;
+	public Personaje[][] mPersonaje;	// Mapa para los Personajes.
+	private int tamanoX;				// Nº columnas en el mapa.
+	private int tamanoY;				// Nº filas en el mapa.
 
-	/** CONSTRUCTOR */
+	/** CONSTRUCTORES */
 	public MatrizDeJuego() {
 		mPersonaje = new Personaje[10][10];
 
@@ -20,11 +19,10 @@ public class MatrizDeJuego {
 		}
 	}
 	
-	/** CONSTRUCTOR */
 	public MatrizDeJuego(int tamanoX, int tamanoY) {
-		mPersonaje = new Personaje[tamanoX][tamanoY];
-		this.tamanoX = tamanoX;
-		this.tamanoY = tamanoY;
+		mPersonaje = new Personaje[tamanoX][tamanoY];  	
+		this.tamanoX = tamanoX;							
+		this.tamanoY = tamanoY;							
 
 		for (int x = 0; x < tamanoX; x++) {
 			for (int y = 0; y < tamanoY; y++) {
@@ -50,7 +48,9 @@ public class MatrizDeJuego {
 		this.tamanoY = tamanoY;
 	}
 
-	/** MÉTODO */
+	/** MÉTODOS */
+	
+	/** MÉTODO que inserta un personaje en el mapa. */
 	public void insertarPersonaje (int x, int y, int personaje) {
 		this.mPersonaje[x][y].setEstado(personaje);
 	}

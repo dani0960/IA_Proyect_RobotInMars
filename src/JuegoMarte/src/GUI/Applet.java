@@ -26,6 +26,7 @@ import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import Heurística.AlgoritmoAEstrella;
 import Útiles.CargarMapa;
 import Útiles.MatrizDeJuego;
 
@@ -57,6 +58,7 @@ public class Applet extends JApplet {
 	protected JLabel textoFilas = new JLabel();
 	protected JLabel textoColumnas = new JLabel();
 	protected JLabel textoObstaculos = new JLabel();
+	protected JLabel textoVersion = new JLabel();
 	
 	// from 0 to 9, in 1.0 steps start value 5  SPINNER
 	protected SpinnerNumberModel model1 = new SpinnerNumberModel(10.0, 10.0, 100.0, 1.0);  
@@ -79,7 +81,7 @@ public class Applet extends JApplet {
 	int delay = 100; // milliseconds
 
 	// Variables no fijas
-	private int obsta;
+	private int obsta=10;
 	
 	/** CONSTRUCTOR */
 	public void init() {
@@ -198,7 +200,9 @@ public class Applet extends JApplet {
 		/** Boton INICIAR */
 		botonInicio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				timer.start();
+//				timer.start();
+				AlgoritmoAEstrella AEstrella = new AlgoritmoAEstrella();
+				AEstrella.calcularCamino(areaDibujo.getmGame());
 			}
 		});
 
@@ -273,7 +277,7 @@ public class Applet extends JApplet {
 			public void mouseClicked(MouseEvent e) {
 				int x = e.getX()- areaDibujo.anchoX;
 				int y = e.getY()- areaDibujo.anchoY;
-
+				System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
 				areaDibujo.ponerObjeto(x, y);
 				repaint();
 
@@ -293,6 +297,7 @@ public class Applet extends JApplet {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				// TODO Auto-generated method stub
+				System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA");
 			}
 
 			@Override
@@ -320,7 +325,7 @@ public class Applet extends JApplet {
 		
 		
 		panel.add(textoObstaculos);
-	
+		panel.add(textoVersion);
 		
 		
 		botonInicio.setBounds(new Rectangle(MARGEN, MARGEN, ANCHO_BOTON, ALTO_BOTON));
@@ -328,6 +333,7 @@ public class Applet extends JApplet {
 		botonPaso.setBounds(new Rectangle(MARGEN , MARGEN * 9, ANCHO_BOTON, ALTO_BOTON));
 		botonFin.setBounds(new Rectangle(MARGEN , MARGEN * 13, ANCHO_BOTON, ALTO_BOTON));
 		botonMapa.setBounds(new Rectangle(MARGEN , MARGEN * 44, ANCHO_BOTON, ALTO_BOTON));
+		
 		
 		textoVelocidad.setBounds(new Rectangle(MARGEN , MARGEN * 17, ANCHO_BOTON + 80, ALTO_BOTON));
 		deslizadorVelocidad.setBounds(new Rectangle( MARGEN  , MARGEN * 21 , ANCHO_BOTON , ALTO_BOTON));
@@ -341,6 +347,9 @@ public class Applet extends JApplet {
 		textoObstaculos.setBounds(new Rectangle(MARGEN , MARGEN * 35, ANCHO_BOTON , ALTO_BOTON));
 		spin3.setBounds(new Rectangle(MARGEN +80, MARGEN * 35, ANCHO_CAMPO, ALTO_BOTON));
 		botonObstaculo.setBounds(new Rectangle(MARGEN , MARGEN * 40, ANCHO_BOTON, ALTO_BOTON));
+		
+		textoVersion.setText("Versión 0.0.1");
+		textoVersion.setBounds(new Rectangle(MARGEN +40 , MARGEN * 50, ANCHO_BOTON + 80, ALTO_BOTON));
 	}
 
 	public void inicializarDeslizadores(JPanel panel) {

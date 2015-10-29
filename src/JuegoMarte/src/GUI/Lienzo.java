@@ -4,10 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
-
 import javax.swing.JPanel;
-
-import Heurística.ReglasJuego;
 import Útiles.MatrizDeJuego;
 
 // Area de dibujo
@@ -26,7 +23,7 @@ public class Lienzo extends JPanel {
 	
 	/** CONSTRUCTOR */
 	public Lienzo() {
-		this.mGame = new MatrizDeJuego();
+		this.mGame = new MatrizDeJuego(10,10);
 		this.nFilas = 10;
 		this.nColumnas = 10;
 	}
@@ -171,8 +168,8 @@ public class Lienzo extends JPanel {
 	public void pintarFondo(Graphics g) {
 		// INICIALIZAMOS TABLERO
 //		if (!inicializado) {
-//			mGame = new MatrixDeJuego(numeroDeFilas, numeroDeColumnas);
-////			mGame.predeterminado();
+//			mGame = new MatrizDeJuego(10, 10);
+//			mGame.predeterminado();
 //			inicializado = true;
 //		}
 		
