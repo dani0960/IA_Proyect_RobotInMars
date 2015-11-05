@@ -4,7 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.util.ArrayList;
+
 import javax.swing.JPanel;
+
+import Heurística.NodoAEstrella;
 import Útiles.MatrizDeJuego;
 
 // Area de dibujo
@@ -12,8 +16,17 @@ import Útiles.MatrizDeJuego;
 public class Lienzo extends JPanel {
 	// Matrix del juego
 	private MatrizDeJuego mGame;		// Matriz de Juego
+	private ArrayList<NodoAEstrella> solution;
 //	boolean inicializado = false;
 	
+	public ArrayList getSolution() {
+		return solution;
+	}
+
+	public void setSolution(ArrayList solution) {
+		this.solution = solution;
+	}
+
 	// Datos del lienzo
 	private int nFilas, nColumnas;
 	private int altoCasilla, anchoCasilla;
@@ -24,6 +37,7 @@ public class Lienzo extends JPanel {
 	/** CONSTRUCTOR */
 	public Lienzo() {
 		this.mGame = new MatrizDeJuego(10,10);
+		this.solution = new ArrayList<NodoAEstrella>();
 		this.nFilas = 10;
 		this.nColumnas = 10;
 	}
@@ -61,6 +75,7 @@ public class Lienzo extends JPanel {
 				mGame.mPersonaje[x][y].setEstado(0);
 			}
 		}
+		this.solution = new ArrayList<NodoAEstrella>();
 	}
 
 	public void updateMGame (int nFilas, int nColumnas, MatrizDeJuego mGame) {
@@ -125,11 +140,20 @@ public class Lienzo extends JPanel {
 
 		pintarFondo(g);
 
+		g.setColor(Color.BLUE.brighter());
+		int x,y;
+		for (int v = 0; v < solution.size(); v++) {
+		       x = (solution.get(v).getX() * this.altoCasilla )+1;
+               y = (solution.get(v).getY() * this.altoCasilla )+1;
+               g.fillRect(y + anchoX, x + anchoY, (this.altoCasilla-1), (this.altoCasilla-1));
+		}
+//	         
+		 
+		
 		Image img1 = Toolkit.getDefaultToolkit().getImage("Images/r2d2.JPG");
 		Image img2 = Toolkit.getDefaultToolkit().getImage("Images/c3po.JPG");
 		Image img3 = Toolkit.getDefaultToolkit().getImage("Images/roca.JPG");
 		Image img4 = Toolkit.getDefaultToolkit().getImage("Images/agua.png");
-		int x,y;
 		System.out.println("aqui1");
 		for (int i = 0; i < mGame.getTamanoX(); i++) {
 			System.out.println("aqui2");
@@ -197,6 +221,6 @@ public class Lienzo extends JPanel {
 	                y = (j * this.altoCasilla )+1;
 	                g.fillRect(y + anchoX, x + anchoY, (this.altoCasilla-1), (this.altoCasilla-1));
 	            }
-	        }
+        }
 	}
 }

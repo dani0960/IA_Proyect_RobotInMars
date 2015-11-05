@@ -11,47 +11,90 @@ public class AlgoritmoAEstrella  {
 	NodoAEstrella nodoInicial = null;
 	NodoAEstrella nodoFinal = null;
 	
+	NodoAEstrella nodoRobot = null;
+	NodoAEstrella nodoAgua = null;
+	
 	public ArrayList calcularCamino(MatrizDeJuego mGame) {
 		ArrayList<NodoAEstrella> listaCerrada = new ArrayList<NodoAEstrella>();
 		ArrayList<NodoAEstrella> listaAbierta = new ArrayList<NodoAEstrella>();
 		
-		
-		// Posición inicial
-		
+		// Nodo Robot Y Nodo Agua
 		for (int i = 0; i < mGame.getTamanoX(); i++) {
 			for (int j = 0; j < mGame.getTamanoY(); j++) {
 				if (mGame.mPersonaje[i][j].getEstado() == 2) {
 					nodoInicial = new NodoAEstrella(i, j);
-					
+					nodoRobot = new NodoAEstrella(i, j);
 					System.out.println("nodoInicial: ("+i+", "+j+").");
 				}
 				if (mGame.mPersonaje[i][j].getEstado() == 4) {
 					nodoFinal = new NodoAEstrella(i, j);
+					nodoAgua = new NodoAEstrella(i, j);
 					System.out.println("nodoFinal: ("+i+", "+j+").");
 				}
 			}
 		}
-		nodoInicial.setCoste( DistanciaManhattan.manhattan( nodoInicial,nodoFinal));
-		listaCerrada.add(nodoInicial);
+		// Posición inicial
+		while (nodoInicial.equal(nodoFinal) != true) {
+			
+			// Nodo Robot Y Nodo Agua
+			for (int i = 0; i < mGame.getTamanoX(); i++) {
+				for (int j = 0; j < mGame.getTamanoY(); j++) {
+					if (mGame.mPersonaje[i][j].getEstado() == 2) {
+						nodoInicial = new NodoAEstrella(i, j);
+						
+						System.out.println("nodoInicial: ("+i+", "+j+").");
+					}
+					if (mGame.mPersonaje[i][j].getEstado() == 4) {
+						nodoFinal = new NodoAEstrella(i, j);
+						System.out.println("nodoFinal: ("+i+", "+j+").");
+					}
+				}
+			}
+			
+			// Agregamos el coste a cada nodo
+			nodoInicial.setCoste( DistanciaManhattan.manhattan( nodoInicial,nodoFinal));
+			// Agregamos la solución en la lista cerrada
+			listaCerrada.add(nodoInicial);
+			// AGREGAMOS NODOS ADYACENTES
+			listaAbierta.addAll(adyacentes(nodoInicial, mGame));
 		
-		listaAbierta.addAll(adyacentes(nodoInicial, mGame));
-		
-		
-		for (int i = 0; i < listaAbierta.size(); i++) {
-			System.out.println("1NodoLista: ("+listaAbierta.get(i).getX()+", "+listaAbierta.get(i).getY()+", "+listaAbierta.get(i).getCoste()+")");
-		}
-		
-		Collections.sort(listaAbierta);
-		
-		for (int i = 0; i < listaAbierta.size(); i++) {
-			System.out.println("2NodoLista: ("+listaAbierta.get(i).getX()+", "+listaAbierta.get(i).getY()+", "+listaAbierta.get(i).getCoste()+")");
-		}
+			// ORDENAMOS LA LISTA
+//			for (int i = 0; i < listaAbierta.size(); i++) {
+//				System.out.println("1NodoLista: ("+listaAbierta.get(i).getX()+", "+listaAbierta.get(i).getY()+", "+listaAbierta.get(i).getCoste()+")");
+//			}
+			
+			Collections.sort(listaAbierta);
+			
+			for (int i = 0; i < listaAbierta.size(); i++) {
+				System.out.println("2NodoLista: ("+listaAbierta.get(i).getX()+", "+listaAbierta.get(i).getY()+", "+listaAbierta.get(i).getCoste()+")");
+			}
 		
 		// Posición final
+		//listaCerrada.add(listaAbierta.get(0));
+		// Movemos robot a la nueva posición
+		System.out.println("ME MUEVOOOOOOOO");
+			if (nodoInicial.equal(nodoFinal) != true)
+			{
+				mGame.mPersonaje[listaAbierta.get(0).getX()][listaAbierta.get(0).getY()].setEstado(2);
+			}
+			// Borramos robot de la posicion actual
+			mGame.mPersonaje[nodoInicial.getX()][nodoInicial.getY()].setEstado(0);
+			// Lo eliminamos de la lista abierta
+			listaAbierta.remove(0);
+			}
 		
 		
+			System.out.println("listaCERRADAAA");
+			for (int i = 0; i < listaCerrada.size(); i++) {
+				System.out.println("Solucion: ("+listaCerrada.get(i).getX()+", "+listaCerrada.get(i).getY()+", "+listaCerrada.get(i).getCoste()+")");
+			}
 		
-		return listaAbierta;
+		//	listaCerrada.add(0, nodoRobot);
+			mGame.mPersonaje[nodoRobot.getX()][nodoRobot.getY()].setEstado(2);
+			mGame.mPersonaje[nodoAgua.getX()][nodoAgua.getY()].setEstado(4);
+	//		listaCerrada.remove(0);
+			listaCerrada.remove(listaCerrada.size()-1);
+			return listaCerrada;
 	}
 	
 	public ArrayList<NodoAEstrella> adyacentes(NodoAEstrella nodoN, MatrizDeJuego mGame){

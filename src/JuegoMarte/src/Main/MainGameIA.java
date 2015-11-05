@@ -26,6 +26,7 @@ public class MainGameIA {
 		Applet applet = new Applet();
 		applet.init();
 
+		
 		frame.add(applet);
 		frame.setTitle("Robot en Marte");
 		frame.setSize(700, 600);

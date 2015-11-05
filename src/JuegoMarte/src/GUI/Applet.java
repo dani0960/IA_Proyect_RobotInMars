@@ -3,7 +3,9 @@ package GUI;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -46,11 +48,11 @@ public class Applet extends JApplet {
 	private JPanel areaBotones = new JPanel();
 
 	// BOTONES
-	protected JButton botonInicio = new JButton("Inicio");
-	protected JButton botonFin = new JButton("Fin");
-	protected JButton botonPausa = new JButton("Pausa");
-	protected JButton botonPaso = new JButton("Paso");
-	protected JButton botonMapa = new JButton("Cargar Mapa");
+	protected JButton botonInicio = new JButton("Run");
+	protected JButton botonFin = new JButton("Clean");
+//	protected JButton botonPausa = new JButton("Pausa");
+//	protected JButton botonPaso = new JButton("Paso");
+	protected JButton botonMapa = new JButton("Load map");
 	protected JButton botonObstaculo = new JButton("Obstáculo");
 
 	protected JSlider deslizadorVelocidad;
@@ -67,7 +69,7 @@ public class Applet extends JApplet {
 	protected JSpinner spin2 = new JSpinner(model2);
 	protected SpinnerNumberModel model3 = new SpinnerNumberModel(10.0, 10.0, 100.0, 1.0); 
 	protected JSpinner spin3 = new JSpinner(model3);
-	
+	protected Image img4 = Toolkit.getDefaultToolkit().getImage("Images/wars.png");
 	
 	private JTextField jtfnumber = new JTextField();
 	private JTextField jtfnumber2 = new JTextField();
@@ -104,7 +106,8 @@ public class Applet extends JApplet {
 		textoFilas = new JLabel("Filas: ");
 		textoObstaculos = new JLabel("Obstáculos: ");
 		inicializarBotones(areaBotones);
-
+		
+		
 		// // BOTONES
 
 		/** Introduce numero 1-100 */
@@ -202,25 +205,26 @@ public class Applet extends JApplet {
 			public void actionPerformed(ActionEvent e) {
 //				timer.start();
 				AlgoritmoAEstrella AEstrella = new AlgoritmoAEstrella();
-				AEstrella.calcularCamino(areaDibujo.getmGame());
+				areaDibujo.setSolution(AEstrella.calcularCamino(areaDibujo.getmGame()));
+				repaint();
 			}
 		});
 
 		/** Boton PAUSAR */
-		botonPausa.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				timer.stop();
-			}
-		});
+//		botonPausa.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				timer.stop();
+//			}
+//		});
 
 		/** Boton STEP */
-		botonPaso.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				timer.stop();
-//				areaDibujo.paso();
-				repaint();
-			}
-		});
+//		botonPaso.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				timer.stop();
+////				areaDibujo.paso();
+//				repaint();
+//			}
+//		});
 
 		/** Boton BORRAR */
 		botonFin.addActionListener(new ActionListener() {
@@ -258,7 +262,7 @@ public class Applet extends JApplet {
 			public void stateChanged(ChangeEvent e) {
 				int velocidad = deslizadorVelocidad.getValue();
 				timer.setDelay(velocidad);
-				textoVelocidad.setText("Velocidad: " + velocidad + " ms");
+				textoVelocidad.setText("Obstáculos: " + velocidad + " %");
 			}
 		});
 
@@ -267,7 +271,6 @@ public class Applet extends JApplet {
 			public void mouseDragged(MouseEvent e) {
 				int x = e.getX()- areaDibujo.anchoX;
 				int y = e.getY()- areaDibujo.anchoY;
-
 				areaDibujo.ponerObjeto(x, y);
 				repaint();
 			}
@@ -277,7 +280,6 @@ public class Applet extends JApplet {
 			public void mouseClicked(MouseEvent e) {
 				int x = e.getX()- areaDibujo.anchoX;
 				int y = e.getY()- areaDibujo.anchoY;
-				System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
 				areaDibujo.ponerObjeto(x, y);
 				repaint();
 
@@ -312,8 +314,8 @@ public class Applet extends JApplet {
 	public void inicializarBotones(JPanel panel) {
 		panel.add(botonInicio);
 		panel.add(botonFin);
-		panel.add(botonPausa);
-		panel.add(botonPaso);
+//		panel.add(botonPausa);
+//		panel.add(botonPaso);
 		panel.add(botonMapa);
 		panel.add(textoFilas);
 		panel.add(textoColumnas);
@@ -322,33 +324,35 @@ public class Applet extends JApplet {
 		panel.add(spin3);
 		panel.add(patList);
 		panel.add(botonObstaculo);
-		
+	
 		
 		panel.add(textoObstaculos);
 		panel.add(textoVersion);
 		
 		
-		botonInicio.setBounds(new Rectangle(MARGEN, MARGEN, ANCHO_BOTON, ALTO_BOTON));
-		botonPausa.setBounds(new Rectangle(MARGEN , MARGEN * 5, ANCHO_BOTON, ALTO_BOTON));
-		botonPaso.setBounds(new Rectangle(MARGEN , MARGEN * 9, ANCHO_BOTON, ALTO_BOTON));
-		botonFin.setBounds(new Rectangle(MARGEN , MARGEN * 13, ANCHO_BOTON, ALTO_BOTON));
-		botonMapa.setBounds(new Rectangle(MARGEN , MARGEN * 44, ANCHO_BOTON, ALTO_BOTON));
+		
+		botonMapa.setBounds(new Rectangle(MARGEN , MARGEN , ANCHO_BOTON, ALTO_BOTON));
+		botonInicio.setBounds(new Rectangle(MARGEN, MARGEN * 5, ANCHO_BOTON, ALTO_BOTON));
+//		botonPausa.setBounds(new Rectangle(MARGEN , MARGEN * 5, ANCHO_BOTON, ALTO_BOTON));
+//		botonPaso.setBounds(new Rectangle(MARGEN , MARGEN * 9, ANCHO_BOTON, ALTO_BOTON));
+		botonFin.setBounds(new Rectangle(MARGEN , MARGEN * 9, ANCHO_BOTON, ALTO_BOTON));
 		
 		
-		textoVelocidad.setBounds(new Rectangle(MARGEN , MARGEN * 17, ANCHO_BOTON + 80, ALTO_BOTON));
-		deslizadorVelocidad.setBounds(new Rectangle( MARGEN  , MARGEN * 21 , ANCHO_BOTON , ALTO_BOTON));
 		
-		textoFilas.setBounds(new Rectangle(MARGEN , MARGEN * 27, ANCHO_BOTON , ALTO_BOTON));
-		spin1.setBounds(new Rectangle(MARGEN +80, MARGEN * 27, ANCHO_CAMPO, ALTO_BOTON));
-		textoColumnas.setBounds(new Rectangle(MARGEN , MARGEN * 31, ANCHO_BOTON , ALTO_BOTON));
-		spin2.setBounds(new Rectangle(MARGEN +80, MARGEN * 31, ANCHO_CAMPO, ALTO_BOTON));
-		patList.setBounds(new Rectangle(MARGEN * 101, MARGEN, ANCHO_BOTON, ALTO_BOTON));
+		textoVelocidad.setBounds(new Rectangle(MARGEN +35 , MARGEN * 24, ANCHO_BOTON + 80, ALTO_BOTON));
+		deslizadorVelocidad.setBounds(new Rectangle( MARGEN  , MARGEN * 27 , ANCHO_BOTON , ALTO_BOTON));
+		
+		textoFilas.setBounds(new Rectangle(MARGEN , MARGEN * 15, ANCHO_BOTON , ALTO_BOTON));
+		spin1.setBounds(new Rectangle(MARGEN +80, MARGEN * 15, ANCHO_CAMPO, ALTO_BOTON));
+		textoColumnas.setBounds(new Rectangle(MARGEN , MARGEN * 19, ANCHO_BOTON , ALTO_BOTON));
+		spin2.setBounds(new Rectangle(MARGEN +80, MARGEN * 19, ANCHO_CAMPO, ALTO_BOTON));
+//		patList.setBounds(new Rectangle(MARGEN * 101, MARGEN, ANCHO_BOTON, ALTO_BOTON));
 
-		textoObstaculos.setBounds(new Rectangle(MARGEN , MARGEN * 35, ANCHO_BOTON , ALTO_BOTON));
-		spin3.setBounds(new Rectangle(MARGEN +80, MARGEN * 35, ANCHO_CAMPO, ALTO_BOTON));
-		botonObstaculo.setBounds(new Rectangle(MARGEN , MARGEN * 40, ANCHO_BOTON, ALTO_BOTON));
+//		textoObstaculos.setBounds(new Rectangle(MARGEN , MARGEN * 35, ANCHO_BOTON , ALTO_BOTON));
+//		spin3.setBounds(new Rectangle(MARGEN +80, MARGEN * 35, ANCHO_CAMPO, ALTO_BOTON));
+//		botonObstaculo.setBounds(new Rectangle(MARGEN , MARGEN * 40, ANCHO_BOTON, ALTO_BOTON));
 		
-		textoVersion.setText("Versión 0.0.1");
+		textoVersion.setText("Version 0.0.2");
 		textoVersion.setBounds(new Rectangle(MARGEN +40 , MARGEN * 50, ANCHO_BOTON + 80, ALTO_BOTON));
 	}
 
@@ -359,14 +363,14 @@ public class Applet extends JApplet {
 		// Oyente oyente = new Oyente(this);
 
 		// CARACTERISTICAS DE DESLIZADOR VELOCIDAD
-		deslizadorVelocidad.setMinimum(20);
-		deslizadorVelocidad.setMaximum(1000);
-		deslizadorVelocidad.setValue(200);
-		deslizadorVelocidad.setInverted(true);
+		deslizadorVelocidad.setMinimum(0);
+		deslizadorVelocidad.setMaximum(90);
+		deslizadorVelocidad.setValue(0);
+//		deslizadorVelocidad.setInverted(true);
 		// deslizadorVelocidad.addChangeListener(oyente);
 
 		// texto velocidad
-		textoVelocidad = new JLabel("Velocidad: " + 200 + " ms");
+		textoVelocidad = new JLabel("Obstáctulos: " + 0 + "%");
 
 		
 		panel.add(textoVelocidad);

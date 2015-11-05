@@ -44,6 +44,17 @@ public class NodoAEstrella implements Comparable<NodoAEstrella> {
 		this.y = y;
 	}
 	
+	public boolean equal(NodoAEstrella nodoE) {
+		if (this.getX() == nodoE.getX() && this.getY() == nodoE.getY()) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	
+	
 	@Override
     public int compareTo(NodoAEstrella nodoT) {
 		
