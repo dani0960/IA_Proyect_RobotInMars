@@ -13,11 +13,50 @@ public class NodoAEstrella implements Comparable<NodoAEstrella> {
 	
 	/** Distancia segun algoritmo */
 	private int coste;
+	private int g;
+	private int h;
+	private int f;
 
-	public NodoAEstrella(int x, int y) {
+	/** CONSTRUCTOR */
+//	public NodoAEstrella(int x, int y) {
+//		this.x = x;
+//		this.y = y;
+//		this.f = 0;
+//		this.g = 0;
+//		this.h = 0;
+//	}
+	
+	public NodoAEstrella(int x, int y, int f, int h, int g) {
 		this.x = x;
 		this.y = y;
+		this.f = f;
+		this.g = g;
+		this.h = h;
 	}
+	/** GETTERS AND SETTERS */
+	public int getG() {
+		return g;
+	}
+
+	
+
+	public int getH() {
+		return h;
+	}
+
+	public void setH(int h) {
+		this.h = h;
+	}
+
+	public int getF() {
+		return f;
+	}
+
+	public void setF(int f) {
+		this.f = f;
+	}
+
+
 	
 	public int getCoste() {
 		return coste;
@@ -27,7 +66,6 @@ public class NodoAEstrella implements Comparable<NodoAEstrella> {
 		this.coste = coste;
 	}
 
-	/** GETTERS AND SETTERS */
 	public int getX() {
 		return x;
 	}
@@ -58,7 +96,7 @@ public class NodoAEstrella implements Comparable<NodoAEstrella> {
 	@Override
     public int compareTo(NodoAEstrella nodoT) {
 		
-		return this.getCoste()-nodoT.getCoste();
+		return this.getF()-nodoT.getF();
 		
         //int compareage=((NodoAEstrella)nodoT).getCoste();
         /* For Ascending order*/
@@ -73,6 +111,11 @@ public class NodoAEstrella implements Comparable<NodoAEstrella> {
         /* For Descending order do like this */
         //return compareage-this.studentage;
     }
+
+	public void setG(int result) {
+		this.g = result;
+		
+	}
 
 	
 

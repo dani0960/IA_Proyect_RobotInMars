@@ -152,7 +152,7 @@ public class Lienzo extends JPanel {
 		
 		Image img1 = Toolkit.getDefaultToolkit().getImage("Images/r2d2.JPG");
 		Image img2 = Toolkit.getDefaultToolkit().getImage("Images/c3po.JPG");
-		Image img3 = Toolkit.getDefaultToolkit().getImage("Images/roca.JPG");
+		Image img3 = Toolkit.getDefaultToolkit().getImage("Images/rocks.jpg");
 		Image img4 = Toolkit.getDefaultToolkit().getImage("Images/agua.png");
 		System.out.println("aqui1");
 		for (int i = 0; i < mGame.getTamanoX(); i++) {
