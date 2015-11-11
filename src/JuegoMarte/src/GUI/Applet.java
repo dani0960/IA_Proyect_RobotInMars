@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.io.IOException;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.JApplet;
@@ -28,9 +29,10 @@ import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import Heurística.AlgoritmoAEstrella;
-import Útiles.CargarMapa;
-import Útiles.MatrizDeJuego;
+import Heurística.Astars;
+import Heurística.Node;
+import Útiles.LoadMap;
+import Útiles.Map;
 
 @SuppressWarnings("serial")
 public class Applet extends JApplet {
@@ -44,15 +46,16 @@ public class Applet extends JApplet {
 	Border etched = BorderFactory.createEtchedBorder();
 	Border blackline = BorderFactory.createLineBorder(Color.black);
 
-	private Lienzo areaDibujo = new Lienzo();
+	private Canvas areaDibujo;
 	private JPanel areaBotones = new JPanel();
 
 	// BOTONES
 	protected JButton botonInicio = new JButton("Run");
-	protected JButton botonFin = new JButton("Clean");
+	protected JButton botonFin = new JButton("Clear");
 //	protected JButton botonPausa = new JButton("Pausa");
 //	protected JButton botonPaso = new JButton("Paso");
 	protected JButton botonMapa = new JButton("Load map");
+	protected JButton botonSaveMapa = new JButton("Save map");
 	protected JButton botonObstaculo = new JButton("Obstáculo");
 
 	protected JSlider deslizadorVelocidad;
@@ -78,6 +81,7 @@ public class Applet extends JApplet {
 	String[] patronesStrings = { "Block","Beehive","Toad","Blinker", "Glider", "Diehard" };
 	private JComboBox patList = new JComboBox(patronesStrings);
 	
+	private int cambio = 0;
 	// Timer
 	Timer timer, _timer;
 	int delay = 100; // milliseconds
@@ -87,7 +91,7 @@ public class Applet extends JApplet {
 	
 	/** CONSTRUCTOR */
 	public void init() {
-
+		areaDibujo = new Canvas(); 
 		// AREA DIBUJO
 		areaDibujo.setBackground(Color.WHITE);
 		// areaDibujo.addMouseListener(oyente);
@@ -141,35 +145,35 @@ public class Applet extends JApplet {
 //			}
 //		});
 		
-		// Nos suscribimos a cambios en el JSpinner
-				spin1.addChangeListener(new ChangeListener() {
-					@Override
-					public void stateChanged(ChangeEvent e) {
-						// Ponemos el valor del JSpinner en el JTextField
-						int value = ((SpinnerNumberModel) spin1.getModel()).getNumber().intValue();
-//						 System.out.println("Value Of : " + String.valueOf(spin1.getValue()));
-//						areaDibujo.setNumeroDeFilas(value);
-						areaDibujo.updateMGame(value, areaDibujo.getNumeroDeColumnas(), areaDibujo.getmGame());
-						areaDibujo.clear();
-						repaint();
-					}
+		// Nos suscribimos a cambios en el JSpinner FILAS
+		spin1.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				// Ponemos el valor del JSpinner en el JTextField
+				int value = ((SpinnerNumberModel) spin1.getModel()).getNumber().intValue();
 				
-				});
 				
-				// Nos suscribimos a cambios en el JSpinner
-				spin2.addChangeListener(new ChangeListener() {
-					@Override
-					public void stateChanged(ChangeEvent e) {
-						// Ponemos el valor del JSpinner en el JTextField
-						int value = ((SpinnerNumberModel) spin2.getModel()).getNumber().intValue();
-//						 System.out.println("Value Of : " + String.valueOf(spin1.getValue()));
-//						areaDibujo.setNumeroDeColumnas(value);
-						areaDibujo.updateMGame(areaDibujo.getNumeroDeFilas(), value, areaDibujo.getmGame());
-						areaDibujo.clear();
-						repaint();
-					}
+				Map mGame = new Map(areaDibujo.getmGame().getTamanoX(), value );
+				areaDibujo.updateMap(mGame);
+				repaint();
+			}
+		
+		});
 				
-				});
+		// Nos suscribimos a cambios en el JSpinner COLUMNAS
+		spin2.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				// Ponemos el valor del JSpinner en el JTextField
+				int value = ((SpinnerNumberModel) spin2.getModel()).getNumber().intValue();
+
+				Map mGame = new Map(value, areaDibujo.getmGame().getTamanoY());
+				areaDibujo.updateMap(mGame);
+				repaint();
+				
+			}
+		
+		});
 				spin3.addChangeListener(new ChangeListener() {
 					@Override
 					public void stateChanged(ChangeEvent e) {
@@ -180,32 +184,40 @@ public class Applet extends JApplet {
 				});
 				
 				
-		/** Introduce numero 1-100 */
-//		jtfnumber2.addActionListener(new ActionListener() {
+
+//		/** Timer */
+//		timer = new Timer(delay, new ActionListener() {
 //			public void actionPerformed(ActionEvent e) {
-//				int number = Integer.parseInt(jtfnumber2.getText());
-//				
-////				areaDibujo.setNumeroDeColumnas(number);
-//				areaDibujo.updateMGame(areaDibujo.getNumeroDeFilas(), number);
-//				areaDibujo.clear();
+////				areaDibujo.paso();
 //				repaint();
 //			}
 //		});
-
-		/** Timer */
-		timer = new Timer(delay, new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-//				areaDibujo.paso();
-				repaint();
-			}
-		});
 
 		/** Boton INICIAR */
 		botonInicio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 //				timer.start();
-				AlgoritmoAEstrella AEstrella = new AlgoritmoAEstrella();
-				areaDibujo.setSolution(AEstrella.calcularCamino(areaDibujo.getmGame()));
+				Node nodoInicial = null;
+				Node nodoFinal=null;
+				// put the starting node on the open list (you can leave its f at zero)
+				for (int i = 0; i < areaDibujo.getmGame().getTamanoX(); i++) {
+					for (int j = 0; j < areaDibujo.getmGame().getTamanoY(); j++) {
+						if (areaDibujo.getmGame().map[i][j] == 2) {
+							nodoInicial = new Node(i, j);
+							nodoInicial.definirVecinos(areaDibujo.getmGame());
+//							nodoRobot = new NodoAEstrella(i, j);
+							//System.out.println("nodoInicial: ("+i+", "+j+").");
+						}
+						if (areaDibujo.getmGame().map[i][j] == 4) {
+							nodoFinal = new Node(i, j);
+							nodoFinal.definirVecinos(areaDibujo.getmGame());
+//							nodoAgua = new NodoAEstrella(i, j);
+							//System.out.println("nodoFinal: ("+i+", "+j+").");
+						}
+					}
+				}
+				Astars as = new Astars();
+				areaDibujo.setSolution(as.AStars(nodoInicial, nodoFinal,areaDibujo.getmGame() ));
 				repaint();
 			}
 		});
@@ -229,25 +241,25 @@ public class Applet extends JApplet {
 		/** Boton BORRAR */
 		botonFin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				timer.stop();
-				areaDibujo.clear();
+//				timer.stop();
+				areaDibujo.init();
 				repaint();
 			}
 		});
 		
-		botonObstaculo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				areaDibujo.Random(obsta);
-			}
-		});
+//		botonObstaculo.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				areaDibujo.Random(obsta);
+//			}
+//		});
 		
-		/** Boton BORRAR */
+		/** Boton CARGAR MAPA */
 		botonMapa.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					MatrizDeJuego mGGame = new MatrizDeJuego();
-					mGGame = CargarMapa.CargarMapa("D:/Google drive/Workspace/JuegoMarte/Mapas/mapa1.txt");
-					areaDibujo.updateMGame(mGGame.getTamanoX(), mGGame.getTamanoY(), mGGame);
+					Map mGGame = new Map();
+					mGGame = LoadMap.CargarMapa("D:/Google drive/Workspace/JuegoMarte/Mapas/mapa1.txt");
+					areaDibujo.loadMap(mGGame);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -256,13 +268,46 @@ public class Applet extends JApplet {
 			}
 		});
 
+		botonSaveMapa.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Map mGGame = new Map();
+					mGGame = LoadMap.CargarMapa("D:/Google drive/Workspace/JuegoMarte/Mapas/mapa1.txt");
+					areaDibujo.loadMap(mGGame);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				repaint();
+			}
+		});
 		/** Sliders VELOCIDAD */
 		deslizadorVelocidad.addChangeListener(new ChangeListener() {
 			/** Handle scroll bar adjustment actions */
 			public void stateChanged(ChangeEvent e) {
-				int velocidad = deslizadorVelocidad.getValue();
-				timer.setDelay(velocidad);
-				textoVelocidad.setText("Obstáculos: " + velocidad + " %");
+				int value = deslizadorVelocidad.getValue();
+//				timer.setDelay(velocidad);
+				textoVelocidad.setText("Obstáculos: " + value + " %");
+				areaDibujo.getmGame().clear();
+//				if deslizadorVelocidad.
+//					
+//				if (value > cambio)
+////				areaDibujo.getmGame()
+				value = (areaDibujo.getmGame().getTamanoY()*areaDibujo.getmGame().getTamanoX())* value/100 ;
+				System.out.println("tamañoX:"+ areaDibujo.getmGame().getTamanoX());
+				System.out.println("tamañoY:"+ areaDibujo.getmGame().getTamanoY());
+				Random rn = new Random();
+				for (int i=0; i < value;i++){
+					int random = rn.nextInt(areaDibujo.getmGame().getTamanoY()*areaDibujo.getmGame().getTamanoX());
+					int nfila = random/areaDibujo.getmGame().getTamanoX(); //Se divide el aleatorio entre las celdas de ancho para obtener la fila
+					int ncol = random%areaDibujo.getmGame().getTamanoX(); //Se usa el resto de la division para calcular la columna
+					if (areaDibujo.getmGame().map[ncol][nfila] != 1){
+						areaDibujo.getmGame().map[ncol][nfila] = 1;					
+					}
+				}
+				repaint();
+				
+				
 			}
 		});
 
@@ -299,7 +344,7 @@ public class Applet extends JApplet {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				// TODO Auto-generated method stub
-				System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA");
+//				System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA");
 			}
 
 			@Override
@@ -317,6 +362,7 @@ public class Applet extends JApplet {
 //		panel.add(botonPausa);
 //		panel.add(botonPaso);
 		panel.add(botonMapa);
+		panel.add(botonSaveMapa);
 		panel.add(textoFilas);
 		panel.add(textoColumnas);
 		panel.add(spin1);
@@ -332,20 +378,21 @@ public class Applet extends JApplet {
 		
 		
 		botonMapa.setBounds(new Rectangle(MARGEN , MARGEN , ANCHO_BOTON, ALTO_BOTON));
-		botonInicio.setBounds(new Rectangle(MARGEN, MARGEN * 5, ANCHO_BOTON, ALTO_BOTON));
+		botonSaveMapa.setBounds(new Rectangle(MARGEN , MARGEN * 5, ANCHO_BOTON, ALTO_BOTON));
+		botonInicio.setBounds(new Rectangle(MARGEN, MARGEN * 13, ANCHO_BOTON, ALTO_BOTON));
 //		botonPausa.setBounds(new Rectangle(MARGEN , MARGEN * 5, ANCHO_BOTON, ALTO_BOTON));
 //		botonPaso.setBounds(new Rectangle(MARGEN , MARGEN * 9, ANCHO_BOTON, ALTO_BOTON));
-		botonFin.setBounds(new Rectangle(MARGEN , MARGEN * 9, ANCHO_BOTON, ALTO_BOTON));
+		botonFin.setBounds(new Rectangle(MARGEN , MARGEN * 17, ANCHO_BOTON, ALTO_BOTON));
 		
 		
 		
-		textoVelocidad.setBounds(new Rectangle(MARGEN +35 , MARGEN * 24, ANCHO_BOTON + 80, ALTO_BOTON));
-		deslizadorVelocidad.setBounds(new Rectangle( MARGEN  , MARGEN * 27 , ANCHO_BOTON , ALTO_BOTON));
+		textoVelocidad.setBounds(new Rectangle(MARGEN +35 , MARGEN * 29, ANCHO_BOTON + 80, ALTO_BOTON));
+		deslizadorVelocidad.setBounds(new Rectangle( MARGEN  , MARGEN * 31 , ANCHO_BOTON , ALTO_BOTON));
 		
-		textoFilas.setBounds(new Rectangle(MARGEN , MARGEN * 15, ANCHO_BOTON , ALTO_BOTON));
-		spin1.setBounds(new Rectangle(MARGEN +80, MARGEN * 15, ANCHO_CAMPO, ALTO_BOTON));
-		textoColumnas.setBounds(new Rectangle(MARGEN , MARGEN * 19, ANCHO_BOTON , ALTO_BOTON));
-		spin2.setBounds(new Rectangle(MARGEN +80, MARGEN * 19, ANCHO_CAMPO, ALTO_BOTON));
+		textoFilas.setBounds(new Rectangle(MARGEN , MARGEN * 21, ANCHO_BOTON , ALTO_BOTON));
+		spin1.setBounds(new Rectangle(MARGEN +80, MARGEN * 21, ANCHO_CAMPO, ALTO_BOTON));
+		textoColumnas.setBounds(new Rectangle(MARGEN , MARGEN * 25, ANCHO_BOTON , ALTO_BOTON));
+		spin2.setBounds(new Rectangle(MARGEN +80, MARGEN * 25, ANCHO_CAMPO, ALTO_BOTON));
 //		patList.setBounds(new Rectangle(MARGEN * 101, MARGEN, ANCHO_BOTON, ALTO_BOTON));
 
 //		textoObstaculos.setBounds(new Rectangle(MARGEN , MARGEN * 35, ANCHO_BOTON , ALTO_BOTON));

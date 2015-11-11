@@ -7,7 +7,7 @@ import javax.swing.UIManager;
 
 import GUI.Applet;
 
-public class MainGameIA {
+public class Main {
 
 	public static void main(String[] args) {
 		// Look & Feel del SO.
@@ -28,7 +28,7 @@ public class MainGameIA {
 
 		
 		frame.add(applet);
-		frame.setTitle("Robot en Marte");
+		frame.setTitle("Game IA");
 		frame.setSize(700, 600);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

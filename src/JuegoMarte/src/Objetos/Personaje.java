@@ -1,7 +1,5 @@
 package Objetos;
 
-import java.awt.Color;
-
 public class Personaje {
 	private int estado;
 //	private Color color = color.BLUE;
